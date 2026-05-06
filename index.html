@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <meta name="color-scheme" content="dark">
+
+  <title>UXKAN — Digitale producten die klanten maken | UX, UI, AI &amp; Development</title>
+  <meta name="description" content="UXKAN bouwt strakke, conversiegerichte digitale producten met UX-research, pixel-perfect UI, no-code (Framer/Webflow), SaaS-platformen, AI-workflows en agentic coding. Van eerste klik tot klant.">
+  <meta name="keywords" content="UX/UI design, no-code, Framer, Webflow, SaaS design, AI workflows, agentic coding, designsysteem, conversie">
+  <link rel="canonical" href="https://uxkan.nl/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="nl_NL">
+  <meta property="og:site_name" content="UXKAN">
+  <meta property="og:url" content="https://uxkan.nl/">
+  <meta property="og:title" content="UXKAN — Digitale producten die klanten maken">
+  <meta property="og:description" content="UX-gedreven groei voor jouw digitale product. UX, UI, AI &amp; Development — van eerste klik tot klant.">
+  <meta property="og:image" content="https://uxkan.nl/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="UXKAN — Digitale producten die klanten maken">
+  <meta name="twitter:description" content="UX-gedreven groei voor jouw digitale product. UX, UI, AI &amp; Development.">
+  <meta name="twitter:image" content="https://uxkan.nl/assets/og-image.png">
+
+  <!-- Icons -->
+  <link rel="icon" type="image/svg+xml" href="assets/logomark-white.svg">
+  <link rel="apple-touch-icon" href="assets/logomark-white.svg">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="styles/main.css">
+
+  <!-- JSON-LD: Organization + WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://uxkan.nl/#organization",
+        "name": "UXKAN",
+        "url": "https://uxkan.nl/",
+        "logo": "https://uxkan.nl/assets/uxkan-logo-color.png",
+        "description": "UXKAN bouwt digitale producten met UX, UI, AI en development. Van eerste klik tot klant.",
+        "sameAs": []
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://uxkan.nl/#website",
+        "url": "https://uxkan.nl/",
+        "name": "UXKAN",
+        "publisher": { "@id": "https://uxkan.nl/#organization" },
+        "inLanguage": "nl-NL"
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Naar hoofdinhoud</a>
+
+<!-- ===== Announcement Banner ===== -->
+<div class="banner" id="banner" role="region" aria-label="Aankondiging">
+  <span class="banner__pill">Nieuw</span>
+  <span>AI-workflows en agentic coding zijn nu onderdeel van onze diensten.</span>
+  <button class="banner__close" type="button" aria-label="Sluit aankondiging" data-dismiss="banner">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <path d="M6 6l12 12M6 18L18 6"/>
+    </svg>
+  </button>
+</div>
+
+<!-- ===== Navigation ===== -->
+<header class="nav-wrap" id="navwrap">
+  <nav class="nav" aria-label="Hoofdnavigatie">
+    <a class="nav__brand" href="#" aria-label="UXKAN — homepage">
+      <svg viewBox="0 0 313.89 283.49" aria-hidden="true">
+        <use href="#uxkan-mark"/>
+      </svg>
+      <span>UXKAN</span>
+    </a>
+
+    <ul class="nav__list">
+      <li><a href="#diensten">Diensten</a></li>
+      <li><a href="#cases">Cases</a></li>
+      <li><a href="#aanpak">Aanpak</a></li>
+      <li><a href="#over-ons">Over ons</a></li>
+    </ul>
+
+    <a class="btn btn--primary btn--sm" href="#contact">Plan een gesprek</a>
+
+    <button class="nav__menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" data-menu-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 7h16M4 12h16M4 17h16"/>
+      </svg>
+    </button>
+  </nav>
+</header>
+
+<!-- Mobile menu (off-canvas) -->
+<div class="mobile-menu" id="mobile-menu" aria-hidden="true">
+  <div class="mobile-menu__head">
+    <a class="nav__brand" href="#" aria-label="UXKAN — homepage">
+      <svg viewBox="0 0 313.89 283.49" aria-hidden="true"><use href="#uxkan-mark"/></svg>
+      <span>UXKAN</span>
+    </a>
+    <button class="nav__menu-toggle" type="button" aria-label="Sluit menu" data-menu-toggle>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 6l12 12M6 18L18 6"/>
+      </svg>
+    </button>
+  </div>
+  <ul class="mobile-menu__list">
+    <li><a href="#diensten" data-menu-close>Diensten</a></li>
+    <li><a href="#cases" data-menu-close>Cases</a></li>
+    <li><a href="#aanpak" data-menu-close>Aanpak</a></li>
+    <li><a href="#over-ons" data-menu-close>Over ons</a></li>
+  </ul>
+  <div class="mobile-menu__cta">
+    <a class="btn btn--primary" href="#contact" data-menu-close>Plan een gesprek</a>
+  </div>
+</div>
+
+<!-- Inline SVG defs (logomark symbol used multiple times) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="uxkan-mark" viewBox="0 0 313.89 283.49">
+      <path fill="currentColor" d="M92.81,147.46c0-1.05,.28-2.08,.81-2.98,.51-.89,1.26-1.65,2.17-2.18l31.17-17.99h.32s.44-.44,.44-.44c3.52-2.14,5.63-5.87,5.62-10,0-4.22-2.19-7.99-5.84-10.11l-31.71-18.31c-1.84-1.06-2.98-3.04-2.98-5.17,0-3.69,3.1-5.97,5.97-5.97,1.04,0,2.04,.27,2.97,.81l33.24,19.2c6.96,4.01,11.29,11.5,11.29,19.55s-4.33,15.54-11.29,19.55l-33.24,19.19c-1.87,1.08-4.1,1.08-5.96,0h0c-1.86-1.08-2.98-3.01-2.98-5.16Zm32.1-27.4l.47-.45h.27c1.9-1.32,2.99-3.4,2.98-5.73,0-2.52-1.31-4.77-3.49-6.03l-31.71-18.31c-.21-.12-.42-.25-.62-.39v49.47c.2-.14,.4-.26,.61-.39l31.48-18.17Zm93.18,22.24l-31.71-18.3c-3.66-2.11-5.85-5.9-5.84-10.12,0-4.22,2.19-8,5.84-10.11l31.71-18.31c.91-.52,1.66-1.27,2.17-2.17,.53-.91,.81-1.95,.81-3,0-2.15-1.11-4.08-2.97-5.15-.92-.53-1.95-.81-2.98-.81s-2.06,.28-2.98,.81l-33.24,19.19c-3.43,1.98-6.29,4.84-8.27,8.26-1.98,3.43-3.02,7.33-3.02,11.29,0,8.04,4.33,15.54,11.29,19.55l33.24,19.2c.93,.54,1.93,.81,2.96,.81,2.87,0,5.97-2.28,5.97-5.97,0-2.12-1.14-4.09-2.98-5.16Zm-29.36-34.46c-2.18,1.26-3.49,3.51-3.49,6.03,0,2.52,1.3,4.78,3.49,6.05l31.71,18.3c.21,.12,.42,.25,.62,.39v-49.47c-.2,.14-.41,.27-.62,.39l-31.71,18.31Zm21.05,48.86l-33.24-19.2c-3.56-2.06-6.62-4.91-8.93-8.33v44.67c0,1.88-.5,3.73-1.44,5.34-.94,1.62-2.29,2.96-3.9,3.9-3.24,1.87-7.42,1.87-10.66,0-3.29-1.9-5.34-5.44-5.34-9.24v-44.67c-2.31,3.41-5.38,6.27-8.93,8.33l-33.24,19.2c-3.31,1.9-7.24,1.92-10.56,.06,2.81,17.77,13.69,33.65,29.25,42.63l2.09,1.21c19.77,11.42,44.33,11.42,64.11,0l2.09-1.21c15.56-8.98,26.44-24.86,29.25-42.63-3.18,1.8-7.28,1.82-10.56-.06Z"/>
+    </symbol>
+    <symbol id="ic-check" viewBox="0 0 14 10">
+      <path d="M13 1L5 9 1 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
+  </defs>
+</svg>
+
+<main id="main">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero__bg" aria-hidden="true"></div>
+    <div class="hero__inner">
+      <span class="hero__lead reveal" data-delay="0">
+        <span class="hero__lead-pill">2026</span>
+        <span>UX-gedreven groei, sneller live met AI</span>
+      </span>
+
+      <h1 id="hero-title" class="reveal" data-delay="1">
+        Wij bouwen digitale <span class="brand-text">producten</span><br>
+        die klanten maken
+      </h1>
+
+      <p class="hero__sub reveal" data-delay="2">
+        Logisch, snel en meetbaar — van eerste klik tot klant. Van UX-research en designsystemen tot Framer/Webflow builds, SaaS-platformen, AI-workflows en agentic coding.
+      </p>
+
+      <div class="hero__ctas reveal" data-delay="3">
+        <a class="btn btn--light" href="#diensten">
+          Onze mogelijkheden
+        </a>
+        <a class="btn btn--ghost" href="#cases">
+          <span class="btn-icon-square" aria-hidden="true"></span>
+          Bekijk cases
+        </a>
+      </div>
+
+      <div class="chips reveal" data-delay="4" role="list" aria-label="Resultaten">
+        <span class="chip" role="listitem"><svg aria-hidden="true"><use href="#ic-check"/></svg>Meer conversie</span>
+        <span class="chip" role="listitem"><svg aria-hidden="true"><use href="#ic-check"/></svg>Minder frictie</span>
+        <span class="chip" role="listitem"><svg aria-hidden="true"><use href="#ic-check"/></svg>Sneller live</span>
+        <span class="chip" role="listitem"><svg aria-hidden="true"><use href="#ic-check"/></svg>Hogere kwaliteit</span>
+        <span class="chip" role="listitem"><svg aria-hidden="true"><use href="#ic-check"/></svg>Slimme UI</span>
+      </div>
+
+      <!-- Hero visual: layered gradient blobs + grid + floating UI fragments -->
+      <div class="hero__visual reveal" data-delay="4" aria-hidden="true">
+        <div class="hero__visual-grid"></div>
+        <div class="hero__visual-blob hero__visual-blob--a"></div>
+        <div class="hero__visual-blob hero__visual-blob--b"></div>
+        <div class="hero__visual-blob hero__visual-blob--c"></div>
+
+        <div class="hero__visual-card hero__visual-card--top">
+          <span class="dot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>
+          </span>
+          <div>
+            <div class="meta">Conversie</div>
+            <div>+38% in 6 weken</div>
+          </div>
+        </div>
+
+        <div class="hero__visual-card hero__visual-card--mid">
+          <span class="dot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M2 12h4M18 12h4M5 5l3 3M16 16l3 3M5 19l3-3M16 8l3-3"/></svg>
+          </span>
+          <div>
+            <div class="meta">AI-workflow</div>
+            <div>Live in 14 dagen</div>
+          </div>
+        </div>
+
+        <div class="hero__visual-card hero__visual-card--bot">
+          <span class="dot">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <div>
+            <div class="meta">Designsysteem</div>
+            <div>Schaalbaar &amp; consistent</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Services Deck ===== -->
+  <section class="section services container reveal" id="diensten" aria-labelledby="services-title">
+    <header class="services__head">
+      <h2 id="services-title" class="services__title">Eén partner die alles verbindt</h2>
+      <p class="services__lead">
+        Van UX-research tot pixel-perfect UI, no-code builds in Framer en Webflow, SaaS-platformen en AI-gedreven automatisering — onder één dak.
+      </p>
+    </header>
+
+    <div class="deck" role="img" aria-label="Diensten: UX, UI, AI en Development">
+      <div class="deck__card" data-rot="-16"><span>UX</span></div>
+      <div class="deck__card" data-rot="-8"><span>UI</span></div>
+      <div class="deck__card deck__card--brand" data-rot="0">
+        <svg viewBox="0 0 313.89 283.49" aria-hidden="true"><use href="#uxkan-mark"/></svg>
+      </div>
+      <div class="deck__card" data-rot="8"><span>AI</span></div>
+      <div class="deck__card" data-rot="16"><span>DEV</span></div>
+    </div>
+
+    <div class="services__legend" aria-hidden="true">
+      <span><i></i>UX</span>
+      <span><i></i>UI</span>
+      <span><i></i>UXKAN</span>
+      <span><i></i>AI</span>
+      <span><i></i>DEV</span>
+    </div>
+  </section>
+
+  <!-- ===== Trusted By ===== -->
+  <section class="section--tight trusted container reveal" aria-label="Vertrouwd door onze klanten">
+    <p class="trusted__label">Vertrouwd door scale-ups en corporates</p>
+    <div class="trusted__strip">
+      <div class="trusted__row" aria-hidden="true">
+        <span>KISH LINES</span>
+        <span>ESSENT</span>
+        <span>UNIVERSITY OF TWENTE</span>
+        <span>ACHMEA</span>
+        <span>NOORDHOFF</span>
+        <span>KISH LINES</span>
+        <span>ESSENT</span>
+        <span>UNIVERSITY OF TWENTE</span>
+        <span>ACHMEA</span>
+        <span>NOORDHOFF</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Tabs section: capabilities ===== -->
+  <section class="section tabs-section container reveal" id="aanpak" aria-labelledby="capabilities-title">
+    <header class="tabs-section__head">
+      <p class="eyebrow">UX-gedreven groei voor jouw digitale product</p>
+      <h2 id="capabilities-title" class="tabs-section__title">
+        <strong>Ontdek</strong> onze mogelijkheden
+      </h2>
+    </header>
+
+    <div class="tablist" role="tablist" aria-label="Onze diensten">
+      <button class="tab" role="tab" id="tab-discovery" aria-selected="true" aria-controls="panel-discovery" data-tab="discovery">Discovery</button>
+      <button class="tab" role="tab" id="tab-design" aria-selected="false" aria-controls="panel-design" tabindex="-1" data-tab="design">Design</button>
+      <button class="tab" role="tab" id="tab-development" aria-selected="false" aria-controls="panel-development" tabindex="-1" data-tab="development">Development</button>
+      <button class="tab" role="tab" id="tab-ai" aria-selected="false" aria-controls="panel-ai" tabindex="-1" data-tab="ai">AI &amp; Agents</button>
+    </div>
+
+    <article class="tabpanel" id="panel-discovery" role="tabpanel" aria-labelledby="tab-discovery">
+      <div class="tabpanel__copy">
+        <span class="tabpanel__eyebrow">Validatie vóór je bouwt</span>
+        <h3 class="tabpanel__title">Strategische product discovery</h3>
+        <ul class="tabpanel__list">
+          <li><span class="num">1</span>Concurrentie- &amp; marktanalyse</li>
+          <li><span class="num">2</span>Gebruikersonderzoek &amp; interviews</li>
+          <li><span class="num">3</span>Product- &amp; feature-validatie</li>
+          <li><span class="num">4</span>UX/UI audit met scorecard</li>
+          <li><span class="num">5</span>Rapid prototype in Figma of Framer</li>
+        </ul>
+      </div>
+      <div class="tabpanel__visual" aria-hidden="true">
+        <p class="tabpanel__visual-quote">"Te veel keuzes → voelt overweldigend." — gebruikersinterview, sprint 1</p>
+      </div>
+    </article>
+
+    <article class="tabpanel" id="panel-design" role="tabpanel" aria-labelledby="tab-design" hidden>
+      <div class="tabpanel__copy">
+        <span class="tabpanel__eyebrow">Pixel-perfect en schaalbaar</span>
+        <h3 class="tabpanel__title">Designsysteem &amp; high-end UI</h3>
+        <ul class="tabpanel__list">
+          <li><span class="num">1</span>Designsysteem &amp; tokens</li>
+          <li><span class="num">2</span>Componentenbibliotheek</li>
+          <li><span class="num">3</span>Marketingpagina's met conversiefocus</li>
+          <li><span class="num">4</span>Productinterface (SaaS &amp; dashboards)</li>
+          <li><span class="num">5</span>Motion &amp; micro-interacties</li>
+        </ul>
+      </div>
+      <div class="tabpanel__visual" aria-hidden="true">
+        <p class="tabpanel__visual-quote">Eén bron van waarheid. Sneller bouwen, minder reviewrondes.</p>
+      </div>
+    </article>
+
+    <article class="tabpanel" id="panel-development" role="tabpanel" aria-labelledby="tab-development" hidden>
+      <div class="tabpanel__copy">
+        <span class="tabpanel__eyebrow">Sneller live met no-code</span>
+        <h3 class="tabpanel__title">Framer, Webflow &amp; SaaS-platformen</h3>
+        <ul class="tabpanel__list">
+          <li><span class="num">1</span>Framer development &amp; CMS</li>
+          <li><span class="num">2</span>Webflow met custom interacties</li>
+          <li><span class="num">3</span>SaaS-platform integraties</li>
+          <li><span class="num">4</span>Performance, Core Web Vitals &amp; SEO</li>
+          <li><span class="num">5</span>Hand-off naar engineering</li>
+        </ul>
+      </div>
+      <div class="tabpanel__visual" aria-hidden="true">
+        <p class="tabpanel__visual-quote">Van design tot live in dagen — zonder dev-bottleneck.</p>
+      </div>
+    </article>
+
+    <article class="tabpanel" id="panel-ai" role="tabpanel" aria-labelledby="tab-ai" hidden>
+      <div class="tabpanel__copy">
+        <span class="tabpanel__eyebrow">AI-workflows &amp; agentic coding</span>
+        <h3 class="tabpanel__title">Slimmer bouwen met AI-agents</h3>
+        <ul class="tabpanel__list">
+          <li><span class="num">1</span>AI-workflows op maat</li>
+          <li><span class="num">2</span>Agentic coding &amp; codegen</li>
+          <li><span class="num">3</span>Content- &amp; design-automatisering</li>
+          <li><span class="num">4</span>Intelligente onboarding-flows</li>
+          <li><span class="num">5</span>LLM-integraties in product</li>
+        </ul>
+      </div>
+      <div class="tabpanel__visual" aria-hidden="true">
+        <p class="tabpanel__visual-quote">90% lagere operationele kosten — meetbare impact, sneller live.</p>
+      </div>
+    </article>
+
+    <div class="tabs-section__ctas">
+      <a class="btn btn--ghost btn--sm" href="#aanpak">Onze aanpak</a>
+      <a class="btn btn--primary btn--sm" href="#contact">Plan een gesprek</a>
+    </div>
+  </section>
+
+  <!-- ===== Friction grid ===== -->
+  <section class="section friction container reveal" aria-labelledby="friction-title">
+    <header class="friction__head">
+      <p class="eyebrow">Herken je dit?</p>
+      <h2 id="friction-title" class="friction__title">Fix je designfrictie</h2>
+    </header>
+
+    <div class="friction__grid">
+      <article class="friction__card reveal" data-delay="1">
+        <span class="eyebrow">Trage lancering?</span>
+        <h3>Moe van trage designrondes?</h3>
+        <div class="friction__swatch" style="background: linear-gradient(135deg, #FF21C8, #4AE0EB);" aria-hidden="true"></div>
+        <p>We houden de vaart erin met strakke workflows en slimme AI-flows, zodat je niet nóg een week verliest aan half designwerk.</p>
+        <span class="friction__metric">40% sneller live</span>
+      </article>
+
+      <article class="friction__card reveal" data-delay="2">
+        <span class="eyebrow">Budgetstress?</span>
+        <h3>Topdesign zonder groot prijskaartje?</h3>
+        <div class="friction__swatch" style="background: linear-gradient(135deg, #CA5EED, #4AE0EB);" aria-hidden="true"></div>
+        <p>We focussen op wat écht telt, snijden de ruis weg en besparen je tijd, energie en geld zonder dat je kwaliteit kwijtraakt.</p>
+        <span class="friction__metric">20% lagere design- &amp; devkosten</span>
+      </article>
+
+      <article class="friction__card reveal" data-delay="3">
+        <span class="eyebrow">Richting onduidelijk</span>
+        <h3>Je mist een UX-kompas</h3>
+        <div class="friction__swatch" style="background: linear-gradient(135deg, #CD5B57, #AE4AAA);" aria-hidden="true"></div>
+        <p>We maken helder welke stappen écht waarde opleveren, zodat je sneller beslist en het team gericht werkt.</p>
+        <span class="friction__metric">+23% hogere efficiëntie</span>
+      </article>
+    </div>
+
+    <div class="friction__cta">
+      <a class="btn btn--primary" href="#contact">Plan een gesprek</a>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="section cta container reveal" id="contact" aria-labelledby="cta-title">
+    <div class="cta__floats" aria-hidden="true">
+      <div class="cta__float cta__float--a"></div>
+      <div class="cta__float cta__float--b"></div>
+      <div class="cta__float cta__float--c"></div>
+      <div class="cta__float cta__float--d"></div>
+    </div>
+    <h2 id="cta-title" class="cta__title">
+      <span class="brand-text">Nieuw</span> product of redesign?<br>
+      Wij helpen je verder
+    </h2>
+    <div class="chips" style="margin-top: 24px;">
+      <span class="chip"><svg aria-hidden="true"><use href="#ic-check"/></svg>Meer conversie</span>
+      <span class="chip"><svg aria-hidden="true"><use href="#ic-check"/></svg>Minder frictie</span>
+      <span class="chip"><svg aria-hidden="true"><use href="#ic-check"/></svg>Sneller live</span>
+      <span class="chip"><svg aria-hidden="true"><use href="#ic-check"/></svg>Hogere kwaliteit</span>
+      <span class="chip"><svg aria-hidden="true"><use href="#ic-check"/></svg>Slimme UI</span>
+    </div>
+    <div class="hero__ctas" style="margin-top: 36px;">
+      <a class="btn btn--primary" href="mailto:hello@uxkan.nl">Plan een gesprek</a>
+      <a class="btn btn--ghost" href="#diensten">
+        <span class="btn-icon-square" aria-hidden="true"></span>
+        Onze diensten
+      </a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="footer" id="over-ons" aria-labelledby="footer-heading">
+  <h2 id="footer-heading" class="visually-hidden" style="position:absolute;left:-9999px">Site informatie</h2>
+  <div class="footer__noise" aria-hidden="true"></div>
+  <div class="footer__wordmark" aria-hidden="true">UXKAN</div>
+
+  <div class="footer__inner">
+    <div class="footer__brand-block">
+      <span class="footer__brand-mark">
+        <svg viewBox="0 0 313.89 283.49" aria-hidden="true"><use href="#uxkan-mark"/></svg>
+        UXKAN
+      </span>
+      <p class="footer__tag">Digitale producten met structuur en richting. Van eerste klik tot klant.</p>
+    </div>
+
+    <div class="footer__col">
+      <h4>Diensten</h4>
+      <ul>
+        <li><a href="#diensten">UX/UI Design</a></li>
+        <li><a href="#diensten">No-code (Framer/Webflow)</a></li>
+        <li><a href="#diensten">SaaS-platformen</a></li>
+        <li><a href="#diensten">AI-workflows</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Bedrijf</h4>
+      <ul>
+        <li><a href="#cases">Cases</a></li>
+        <li><a href="#aanpak">Aanpak</a></li>
+        <li><a href="#over-ons">Over ons</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+
+    <div class="footer__col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hello@uxkan.nl">hello@uxkan.nl</a></li>
+        <li><a href="#contact">Plan een gesprek</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer__meta">
+    <span class="footer__copy">© 2026 UXKAN B.V. — Alle rechten voorbehouden.</span>
+    <button class="footer__top" type="button" aria-label="Naar boven" data-back-to-top>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+  </div>
+</footer>
+
+<script src="scripts/main.js" defer></script>
+</body>
+</html>
