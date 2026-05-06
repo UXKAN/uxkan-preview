@@ -1,29 +1,40 @@
 /* ============================================================
-   UXKAN — Homepage interactivity.
-   Banner dismiss, sticky-nav scroll state, mobile menu, tabs,
-   intersection-observer reveals, smooth scroll, back-to-top.
+   UXKAN — Homepage interactivity
+   - Banner dismiss
+   - Sticky-nav scroll state
+   - Mobile menu
+   - Intersection-observer reveals
+   - Smooth scroll & back-to-top
+   - Hero parallax (pointer)
+   - Case-study stacking scroll
    ============================================================ */
 (function () {
   "use strict";
 
-  /* ---------- Banner dismiss ---------- */
-  const banner = document.getElementById("banner");
-  const bannerKey = "uxkan:banner-dismissed-v1";
-  if (banner) {
-    if (sessionStorage.getItem(bannerKey) === "1") banner.hidden = true;
-    banner.addEventListener("click", function (e) {
-      const target = e.target.closest("[data-dismiss='banner']");
-      if (!target) return;
-      banner.hidden = true;
-      try { sessionStorage.setItem(bannerKey, "1"); } catch (_) {}
-    });
-  }
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const fineMq = window.matchMedia("(pointer:fine)");
 
-  /* ---------- Sticky nav scroll state ---------- */
+  /* ---------- Sticky nav scroll state ----------
+     rAF-throttled with hysteresis (12px on, 4px off) to prevent
+     class-flapping at the threshold. */
   const navwrap = document.getElementById("navwrap");
   if (navwrap) {
+    let navTicking = false;
+    let navIsScrolled = false;
     const onScroll = () => {
-      navwrap.classList.toggle("is-scrolled", window.scrollY > 8);
+      if (navTicking) return;
+      navTicking = true;
+      requestAnimationFrame(() => {
+        navTicking = false;
+        const y = window.scrollY;
+        if (!navIsScrolled && y > 12) {
+          navIsScrolled = true;
+          navwrap.classList.add("is-scrolled");
+        } else if (navIsScrolled && y < 4) {
+          navIsScrolled = false;
+          navwrap.classList.remove("is-scrolled");
+        }
+      });
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -51,32 +62,6 @@
     if (e.key === "Escape" && mobileMenu && mobileMenu.classList.contains("is-open")) setMenu(false);
   });
 
-  /* ---------- Tabs (keyboard accessible) ---------- */
-  const tabs = Array.from(document.querySelectorAll("[role='tab']"));
-  const panels = Array.from(document.querySelectorAll("[role='tabpanel']"));
-  function activateTab(tab, focus) {
-    tabs.forEach(t => {
-      const isActive = t === tab;
-      t.setAttribute("aria-selected", isActive ? "true" : "false");
-      t.tabIndex = isActive ? 0 : -1;
-    });
-    panels.forEach(p => {
-      const isActive = p.id === tab.getAttribute("aria-controls");
-      p.hidden = !isActive;
-    });
-    if (focus) tab.focus();
-  }
-  tabs.forEach(tab => {
-    tab.addEventListener("click", () => activateTab(tab, false));
-    tab.addEventListener("keydown", e => {
-      const i = tabs.indexOf(tab);
-      if (e.key === "ArrowRight") { e.preventDefault(); activateTab(tabs[(i + 1) % tabs.length], true); }
-      if (e.key === "ArrowLeft")  { e.preventDefault(); activateTab(tabs[(i - 1 + tabs.length) % tabs.length], true); }
-      if (e.key === "Home")       { e.preventDefault(); activateTab(tabs[0], true); }
-      if (e.key === "End")        { e.preventDefault(); activateTab(tabs[tabs.length - 1], true); }
-    });
-  });
-
   /* ---------- Intersection-observer reveals ---------- */
   const reveals = document.querySelectorAll(".reveal");
   if ("IntersectionObserver" in window && reveals.length) {
@@ -87,7 +72,7 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+    }, { threshold: 0.10, rootMargin: "0px 0px -8% 0px" });
     reveals.forEach(el => io.observe(el));
   } else {
     reveals.forEach(el => el.classList.add("is-in"));
@@ -96,33 +81,93 @@
   /* ---------- Back to top ---------- */
   document.querySelectorAll("[data-back-to-top]").forEach(btn => {
     btn.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({
+        top: 0,
+        behavior: reduceMotion ? "auto" : "smooth"
+      });
     });
   });
 
-  /* ---------- Subtle hero parallax (pointer-driven) ---------- */
-  const hero = document.querySelector(".hero");
-  const visualCards = document.querySelectorAll(".hero__visual-card");
-  if (hero && visualCards.length && window.matchMedia("(pointer:fine)").matches &&
-      !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    let raf = 0;
-    let tx = 0, ty = 0;
-    hero.addEventListener("pointermove", e => {
-      const r = hero.getBoundingClientRect();
-      tx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-      ty = ((e.clientY - r.top)  / r.height - 0.5) * 2;
-      if (!raf) raf = requestAnimationFrame(apply);
+  /* ---------- Pause animations when their section is offscreen ----------
+     Saves GPU work and prevents continuous animation behind the
+     sticky nav (which would force backdrop-filter recompute every frame). */
+  if ("IntersectionObserver" in window) {
+    const pauseTargets = [
+      { sectionSel: ".hero", animatedSel: ".hero__bg-bubbles" },
+      { sectionSel: ".hero", animatedSel: ".hero__showcase" },
+      { sectionSel: ".intro", animatedSel: ".trusted__row" },
+    ];
+    pauseTargets.forEach(({ sectionSel, animatedSel }) => {
+      const section = document.querySelector(sectionSel);
+      const animated = section ? section.querySelector(animatedSel) : null;
+      if (!section || !animated) return;
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          animated.classList.toggle("is-paused", !entry.isIntersecting);
+        });
+      }, { threshold: 0, rootMargin: "100px" });
+      io.observe(section);
     });
-    hero.addEventListener("pointerleave", () => {
-      tx = 0; ty = 0;
-      if (!raf) raf = requestAnimationFrame(apply);
-    });
-    function apply() {
-      raf = 0;
-      visualCards.forEach((card, i) => {
-        const depth = (i + 1) * 4;
-        card.style.translate = `${tx * depth}px ${ty * depth - (i % 2 ? 4 : 0)}px`;
-      });
+  }
+
+  /* ---------- Case studies — stacking scroll ----------
+     The transform is applied to .case-card__inner (not the
+     sticky parent) so the sticky positioning stays stable
+     and we don't repaint the sticky box on every frame.
+  -------------------------------------------------------- */
+  const stack = document.querySelector("[data-cases-stack]");
+  if (stack && !reduceMotion && window.matchMedia("(min-width: 761px)").matches) {
+    const cards = Array.from(stack.querySelectorAll(".case-card"));
+    if (cards.length > 1) {
+      const inners = cards.map(c => c.querySelector(".case-card__inner"));
+      let ticking = false;
+      let lastValues = cards.map(() => ({ s: 1, t: 0 }));
+
+      const onScroll = () => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          const viewportH = window.innerHeight;
+
+          cards.forEach((card, i) => {
+            const next = cards[i + 1];
+            const inner = inners[i];
+            if (!next || !inner) {
+              if (inner && lastValues[i].s !== 1) {
+                inner.style.setProperty("--case-scale", "1");
+                inner.style.setProperty("--case-translate", "0px");
+                lastValues[i] = { s: 1, t: 0 };
+              }
+              return;
+            }
+
+            const nextRect = next.getBoundingClientRect();
+            const start = viewportH;
+            const end = nextRect.height * 0.6;
+            const range = start - end;
+            const progress = clamp01((start - nextRect.top) / range);
+
+            const scale = 1 - progress * 0.06;
+            const translate = -progress * 18;
+
+            // skip DOM writes when value hasn't meaningfully changed
+            if (Math.abs(scale - lastValues[i].s) < 0.001 &&
+                Math.abs(translate - lastValues[i].t) < 0.5) return;
+
+            inner.style.setProperty("--case-scale", scale.toFixed(4));
+            inner.style.setProperty("--case-translate", `${translate.toFixed(2)}px`);
+            lastValues[i] = { s: scale, t: translate };
+          });
+        });
+      };
+
+      onScroll();
+      window.addEventListener("scroll", onScroll, { passive: true });
+      window.addEventListener("resize", onScroll, { passive: true });
     }
   }
+
+  function clamp01(n) { return Math.max(0, Math.min(1, n)); }
+
 })();
