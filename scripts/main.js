@@ -170,4 +170,57 @@
 
   function clamp01(n) { return Math.max(0, Math.min(1, n)); }
 
+  /* ---------- Bento — mouse-reactive glow ----------
+     Sets --mx/--my CSS vars on each card from pointer position.
+     Skipped on coarse pointers (mobile/tablet) and reduced-motion. */
+  if (!reduceMotion && fineMq.matches) {
+    const bentoCards = document.querySelectorAll("[data-bento-card]");
+    if (bentoCards.length) {
+      let bentoTicking = false;
+      let pending = null;
+
+      const flush = () => {
+        bentoTicking = false;
+        if (!pending) return;
+        const { card, x, y } = pending;
+        card.style.setProperty("--mx", x + "px");
+        card.style.setProperty("--my", y + "px");
+        pending = null;
+      };
+
+      bentoCards.forEach(card => {
+        card.addEventListener("pointermove", (e) => {
+          const rect = card.getBoundingClientRect();
+          pending = {
+            card,
+            x: e.clientX - rect.left,
+            y: e.clientY - rect.top,
+          };
+          if (!bentoTicking) {
+            bentoTicking = true;
+            requestAnimationFrame(flush);
+          }
+        });
+        card.addEventListener("pointerleave", () => {
+          card.style.removeProperty("--mx");
+          card.style.removeProperty("--my");
+        });
+      });
+    }
+  }
+
+  /* ---------- Bento — pause background orbs offscreen ---------- */
+  if ("IntersectionObserver" in window) {
+    const bentoSec = document.querySelector(".section.bento");
+    if (bentoSec) {
+      const orbs = bentoSec.querySelectorAll(".bento__bg-orb");
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          orbs.forEach(o => o.style.animationPlayState = entry.isIntersecting ? "running" : "paused");
+        });
+      }, { threshold: 0, rootMargin: "100px" });
+      io.observe(bentoSec);
+    }
+  }
+
 })();

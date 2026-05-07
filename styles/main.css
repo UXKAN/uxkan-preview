@@ -368,10 +368,13 @@ a {
   background: rgb(10,10,12);
   border: 1px solid rgba(255,255,255,0.10);
   border-radius: var(--uxkan-radius-pill);
-  padding: 7px 7px 7px 18px;
+  padding: 7px 7px 7px 10px;
   box-shadow: 0 6px 24px rgba(0,0,0,0.32);
   width: 100%;
   max-width: 820px;
+  /* Explicit height locks the pill so the logo can grow visually without
+     pushing the bar taller. Logo allowed to overflow the pill slightly. */
+  height: 58px;
   transition:
     border-color var(--uxkan-dur-base) var(--uxkan-ease-out),
     box-shadow var(--uxkan-dur-base) var(--uxkan-ease-out);
@@ -385,13 +388,16 @@ a {
   display: inline-flex; align-items: center; gap: 8px;
   color: var(--uxkan-fg-1); font-weight: 600; font-size: 15px;
   letter-spacing: -0.02em;
-  padding: 4px 6px;
+  padding: 4px 6px 4px 0;
 }
 .nav__brand:hover { color: var(--uxkan-fg-1); }
 .nav__brand svg { width: 22px; height: 22px; fill: currentColor; }
 .nav__brand-mark {
-  width: 22px;
-  height: 22px;
+  width: auto;
+  /* Bigger than the nav itself; the explicit nav height keeps the pill
+     fixed, so the logo just visually overflows the top/bottom of the
+     bar a few pixels. */
+  height: clamp(48px, 6.4vw, 80px);
   display: block;
   object-fit: contain;
 }
@@ -947,27 +953,29 @@ a {
   animation: trusted-marquee 60s linear infinite;
 }
 .trusted__row.is-paused { animation-play-state: paused; }
-.trusted__row img {
-  height: clamp(22px, 2.4vw, 30px);
+/* Slot-based normalization — every logo sits in a fixed-size container
+   and uses object-fit: contain to scale to whichever dimension fits.
+   Wide wordmarks fill horizontally, square marks fill vertically;
+   visual weight stays consistent across the strip without per-logo tuning. */
+.trusted__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(100px, 11vw, 140px);
+  height: clamp(36px, 3.6vw, 46px);
+  flex-shrink: 0;
+}
+.trusted__slot img {
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
+  height: auto;
+  object-fit: contain;
   opacity: 0.70;
   filter: brightness(0) invert(1);
   transition: opacity var(--uxkan-dur-base) var(--uxkan-ease-out);
-  flex-shrink: 0;
 }
-.trusted__row img:hover { opacity: 1; }
-
-/* Per-logo size normalization — text wordmarks render visually smaller
-   than icon-logos at the same height; give wordmarks a slight boost so
-   the row feels uniform. */
-.trusted__row img[src*="unive"],
-.trusted__row img[src*="ut.png"],
-.trusted__row img[src*="vgz"],
-.trusted__row img[src*="essent"],
-.trusted__row img[src*="noordhoff"],
-.trusted__row img[src*="vandebron"] {
-  height: clamp(26px, 2.8vw, 36px);
-}
+.trusted__slot img:hover { opacity: 1; }
 
 @keyframes trusted-marquee {
   from { transform: translate3d(0, 0, 0); }
@@ -1728,6 +1736,1035 @@ a {
 .footer__top:hover {
   background: rgba(255,255,255,0.25);
   transform: translateY(-2px);
+}
+
+/* ============================================================
+   BENTO — Capabilities grid
+   Dark, premium, subtle motion. Mouse-reactive glow per card.
+   ============================================================ */
+.section.bento {
+  position: relative;
+  isolation: isolate;
+}
+.bento__bg {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+/* Static, GPU-cheap soft glows — no filter:blur, no animation,
+   to prevent flicker from large blurred regions repainting per frame. */
+.bento__bg-orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.bento__bg-orb--a {
+  width: 720px; height: 720px;
+  background: radial-gradient(closest-side, rgba(174,74,170,0.30), rgba(174,74,170,0.08) 35%, transparent 70%);
+  top: -260px; left: -240px;
+}
+.bento__bg-orb--b {
+  width: 820px; height: 820px;
+  background: radial-gradient(closest-side, rgba(74,224,235,0.16), rgba(74,224,235,0.04) 35%, transparent 65%);
+  bottom: -340px; right: -280px;
+}
+.bento__bg-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
+}
+/* Grid layout */
+.bento-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(14px, 1.4vw, 20px);
+}
+/* Tablet: 2-col, AI spans full width, others fill cleanly:
+   row 1 = AI (span 2), row 2 = UX | Strategy, row 3 = SEO | Speed */
+@media (min-width: 640px) and (max-width: 979.98px) {
+  .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-rows: minmax(240px, auto);
+  }
+  .bento-card--ai       { grid-column: span 2; }
+  .bento-card--ux       { grid-column: span 1; }
+  .bento-card--strategy { grid-column: span 1; }
+  .bento-card--seo      { grid-column: span 1; }
+  .bento-card--speed    { grid-column: span 1; }
+}
+/* Desktop: 3-col, top row AI(2)+UX(1), bottom row 3 equal */
+@media (min-width: 980px) {
+  .bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: minmax(280px, auto);
+  }
+  .bento-card--ai       { grid-column: span 2; }
+  .bento-card--ux       { grid-column: span 1; }
+  .bento-card--strategy { grid-column: span 1; }
+  .bento-card--seo      { grid-column: span 1; }
+  .bento-card--speed    { grid-column: span 1; }
+}
+@media (min-width: 1200px) {
+  .bento-grid { grid-auto-rows: minmax(320px, auto); }
+}
+
+/* Card base */
+.bento-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  padding: clamp(20px, 2vw, 28px);
+  border-radius: var(--uxkan-radius-xl);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.01) 100%),
+    rgb(11,11,14);
+  border: 1px solid var(--uxkan-border-2);
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 240px;
+  transition:
+    transform var(--uxkan-dur-base) var(--uxkan-ease-out),
+    border-color var(--uxkan-dur-base) var(--uxkan-ease-out),
+    box-shadow var(--uxkan-dur-base) var(--uxkan-ease-out);
+}
+.bento-card::before {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0) 40%, rgba(255,143,234,0.20) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity var(--uxkan-dur-base) var(--uxkan-ease-out);
+  z-index: 1;
+}
+.bento-card:hover {
+  border-color: var(--uxkan-border-3);
+  box-shadow:
+    0 0.6px 1.8px rgba(0,0,0,0.22),
+    0 12px 32px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(255,143,234,0.08);
+  transform: translateY(-2px);
+}
+.bento-card:hover::before { opacity: 1; }
+
+/* Mouse-reactive radial glow */
+.bento-card__glow {
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--uxkan-dur-base) var(--uxkan-ease-out);
+  background: radial-gradient(
+    320px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(255,143,234,0.18),
+    rgba(255,143,234,0) 60%
+  );
+  z-index: 0;
+}
+.bento-card:hover .bento-card__glow { opacity: 1; }
+
+.bento-card__visual {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 140px;
+  z-index: 1;
+}
+.bento-card__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 76px;
+  justify-content: flex-end;
+}
+.bento-card__title {
+  font-size: clamp(17px, 1.4vw, 20px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--uxkan-fg-1);
+  line-height: 1.25;
+  text-wrap: balance;
+}
+.bento-card__copy {
+  font-size: clamp(13px, 0.9vw, 14px);
+  color: var(--uxkan-fg-3);
+  line-height: 1.45;
+  max-width: 38ch;
+  text-wrap: balance;
+}
+/* Larger title on the prominent AI card */
+.bento-card--ai .bento-card__title {
+  font-size: clamp(19px, 1.6vw, 24px);
+}
+/* Bottom row: fixed visual area for clean baseline alignment */
+@media (min-width: 980px) {
+  .bento-card--strategy .bento-card__visual,
+  .bento-card--seo .bento-card__visual,
+  .bento-card--speed .bento-card__visual {
+    flex: 0 0 auto;
+    min-height: 0;
+    height: 168px;
+    margin-bottom: 14px;
+  }
+  .bento-card--strategy .bento-card__content,
+  .bento-card--seo .bento-card__content,
+  .bento-card--speed .bento-card__content {
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    min-height: 88px;
+  }
+  /* Single-line titles on bottom row */
+  .bento-card--strategy .bento-card__title,
+  .bento-card--seo .bento-card__title,
+  .bento-card--speed .bento-card__title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(15px, 1.15vw, 18px);
+  }
+}
+
+/* ---------- 1. AI orbit (perfect circle + terminal + 6 orbiting icons) ---------- */
+.bento-card--ai {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(174,74,170,0.18), transparent 55%),
+    radial-gradient(80% 80% at 100% 100%, rgba(74,224,235,0.10), transparent 60%),
+    linear-gradient(180deg, rgb(14,12,18) 0%, rgb(8,8,11) 100%);
+}
+.bento-card--ai .bento-card__visual {
+  min-height: 280px;
+  align-items: center;
+  justify-content: center;
+}
+.ai-orbit {
+  position: relative;
+  width: clamp(280px, 56vw, 480px);
+  aspect-ratio: 1.35 / 1;
+  margin: 0 auto;
+  --orbit-r: clamp(116px, 19vw, 174px);
+}
+@media (min-width: 980px) {
+  .ai-orbit {
+    width: clamp(400px, 34vw, 540px);
+    aspect-ratio: 1.4 / 1;
+    --orbit-r: clamp(140px, 12vw, 184px);
+  }
+}
+.ai-orbit__ring {
+  position: absolute; inset: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 50%;
+  pointer-events: none;
+  /* Match icon orbit: tilted 35° clockwise, slightly compressed vertically
+     to read as the same NW-SE oval the icons trace out. */
+  transform: rotate(35deg) scaleY(0.78);
+  transform-origin: center;
+}
+.ai-orbit__ring--inner {
+  inset: 22%;
+  border-color: rgba(255,143,234,0.10);
+  border-style: dashed;
+}
+.ai-orbit__ring--outer { inset: 0; border-color: rgba(255,255,255,0.10); }
+.ai-orbit__halo {
+  position: absolute;
+  inset: -12%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,143,234,0.10), transparent 60%);
+  pointer-events: none;
+}
+
+/* UXKAN orb at the center of the orbit */
+.ai-orbit__center {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: clamp(88px, 13vw, 124px);
+  aspect-ratio: 1 / 1;
+  transform: translate(-50%, -50%);
+  display: grid; place-items: center;
+  z-index: 2;
+}
+/* Halo: pure opacity+scale fade — no blur, no per-frame paint of large area */
+.ai-orbit__center-glow {
+  position: absolute;
+  inset: -34%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,143,234,0.42) 0%, rgba(174,74,170,0.16) 40%, transparent 70%);
+  pointer-events: none;
+  animation: orb-halo 5s var(--uxkan-ease-soft) infinite;
+  will-change: opacity, transform;
+  transform: translateZ(0);
+}
+.ai-orbit__center-ring {
+  position: absolute;
+  inset: -10%;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.04), rgba(255,255,255,0) 60%);
+  pointer-events: none;
+}
+/* Static box-shadow on the orb itself; pulse handled by the sibling glow */
+.ai-orbit__center-orb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 32% 28%, rgba(255,255,255,0.32), rgba(255,255,255,0.06) 40%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(135deg, rgb(205,91,87) 0%, rgb(174,74,170) 60%, rgb(120,0,90) 100%);
+  display: grid; place-items: center;
+  border: 1px solid rgba(255,255,255,0.20);
+  box-shadow:
+    0 0 36px rgba(255,143,234,0.28),
+    0 14px 38px rgba(0,0,0,0.5),
+    inset 0 0 22px rgba(255,255,255,0.10),
+    inset 0 -14px 24px rgba(0,0,0,0.35);
+}
+.ai-orbit__center-orb svg,
+.ai-orbit__center-orb img {
+  width: 60%; height: 60%;
+  color: rgba(255,255,255,0.96);
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+  pointer-events: none;
+}
+@keyframes orb-halo {
+  0%, 100% { opacity: 0.55; transform: translateZ(0) scale(1); }
+  50%      { opacity: 1;    transform: translateZ(0) scale(1.08); }
+}
+
+/* Side particles */
+.ai-orbit__particles {
+  position: absolute;
+  inset: -4%;
+  pointer-events: none;
+  z-index: 1;
+}
+.ai-particle {
+  position: absolute;
+  top: var(--top);
+  left: var(--left);
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--c, rgba(255,255,255,0.6));
+  box-shadow: 0 0 6px var(--c, rgba(255,255,255,0.5));
+  animation: ai-particle-float 5.2s var(--uxkan-ease-soft) infinite;
+  animation-delay: var(--d, 0s);
+  opacity: 0.8;
+}
+.ai-particle--lg { width: 5px; height: 5px; box-shadow: 0 0 10px var(--c, rgba(255,255,255,0.55)); }
+@keyframes ai-particle-float {
+  0%, 100% { transform: translate3d(0, 0, 0);     opacity: 0.4; }
+  50%      { transform: translate3d(0, -8px, 0);  opacity: 1; }
+}
+
+/* 8 hand-placed positions around the orb — varied radii (some closer,
+   some further) and slight asymmetry so the composition reads as
+   floating tools rather than a strict orbit ring.
+   Each .pos uses only translate; icons stay upright; tooltips sit
+   straight beneath the icon without coordinate-frame issues.
+   z-index 4 keeps icons + tooltips above the center orb (z:2). */
+.ai-orbit__icons {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+}
+.ai-orbit__pos {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  pointer-events: auto;
+  /* Per-pos x/y — set in .pos--N rules below. Keyframes use these
+     so the float animation always orbits its own static position. */
+  --x: 0px;
+  --y: 0px;
+  transform: translate(var(--x), var(--y));
+  will-change: transform;
+}
+.ai-orbit__pos:hover {
+  z-index: 10;
+}
+
+.ai-orbit { --orbit-scale: 0.62; }
+@media (min-width: 640px) { .ai-orbit { --orbit-scale: 0.78; } }
+@media (min-width: 980px) { .ai-orbit { --orbit-scale: 1; } }
+
+/* 9 positions tracing a clear diagonal NW-SE oval. VS Code and Claude
+   sit exactly on the long-axis endpoints (top-left & bottom-right);
+   the other 7 icons follow the same curve at evenly-spaced steps so
+   the composition reads as one consistent oval rather than a loose
+   cluster. Coords pre-computed in px relative to orb center at scale 1. */
+.ai-orbit__pos--1 { /* Claude (lg, SE long-axis end) */ --x: calc( 140px * var(--orbit-scale)); --y: calc(  95px * var(--orbit-scale)); animation: ai-float-a 6.4s var(--uxkan-ease-soft) infinite -0.2s; }
+.ai-orbit__pos--2 { /* Notion (md)                  */ --x: calc(  60px * var(--orbit-scale)); --y: calc( 125px * var(--orbit-scale)); animation: ai-float-b 7.6s var(--uxkan-ease-soft) infinite -1.4s; }
+.ai-orbit__pos--3 { /* Adobe (sm)                   */ --x: calc( -50px * var(--orbit-scale)); --y: calc( 110px * var(--orbit-scale)); animation: ai-float-c 5.8s var(--uxkan-ease-soft) infinite -2.6s; }
+.ai-orbit__pos--4 { /* Figma (lg)                   */ --x: calc(-145px * var(--orbit-scale)); --y: calc(   0px * var(--orbit-scale)); animation: ai-float-d 6.8s var(--uxkan-ease-soft) infinite -3.0s; }
+.ai-orbit__pos--5 { /* VS Code (lg, NW long-axis end)*/ --x: calc(-140px * var(--orbit-scale)); --y: calc( -95px * var(--orbit-scale)); animation: ai-float-a 7.2s var(--uxkan-ease-soft) infinite -1.0s; }
+.ai-orbit__pos--6 { /* n8n (sm)                     */ --x: calc( -55px * var(--orbit-scale)); --y: calc(-125px * var(--orbit-scale)); animation: ai-float-b 6.0s var(--uxkan-ease-soft) infinite -2.2s; }
+.ai-orbit__pos--7 { /* Codex (md)                   */ --x: calc(  55px * var(--orbit-scale)); --y: calc(-120px * var(--orbit-scale)); animation: ai-float-c 7.8s var(--uxkan-ease-soft) infinite -0.6s; }
+.ai-orbit__pos--8 { /* Supabase (md)                */ --x: calc( 135px * var(--orbit-scale)); --y: calc( -55px * var(--orbit-scale)); animation: ai-float-d 6.6s var(--uxkan-ease-soft) infinite -3.4s; }
+.ai-orbit__pos--9 { /* Vercel (md)                  */ --x: calc( 150px * var(--orbit-scale)); --y: calc(  30px * var(--orbit-scale)); animation: ai-float-a 7.0s var(--uxkan-ease-soft) infinite -2.0s; }
+
+/* Subtle float patterns — each shifts a few pixels in a unique direction
+   so icons feel independently alive without being busy. Keyframes
+   reference --x/--y so each pos drifts around its own anchor. */
+@keyframes ai-float-a {
+  0%, 100% { transform: translate(var(--x), var(--y)); }
+  50%      { transform: translate(var(--x), calc(var(--y) - 6px)); }
+}
+@keyframes ai-float-b {
+  0%, 100% { transform: translate(var(--x), var(--y)); }
+  50%      { transform: translate(calc(var(--x) + 4px), calc(var(--y) - 4px)); }
+}
+@keyframes ai-float-c {
+  0%, 100% { transform: translate(var(--x), var(--y)); }
+  50%      { transform: translate(calc(var(--x) - 5px), calc(var(--y) - 3px)); }
+}
+@keyframes ai-float-d {
+  0%, 100% { transform: translate(var(--x), var(--y)); }
+  50%      { transform: translate(calc(var(--x) + 3px), calc(var(--y) + 5px)); }
+}
+
+/* Default (medium) size */
+.ai-orbit__icon {
+  position: absolute;
+  top: -22px; left: -22px;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: rgb(18,18,22);
+  border: 1px solid rgba(255,255,255,0.14);
+  box-shadow:
+    0 8px 22px rgba(0,0,0,0.55),
+    inset 0 0 12px rgba(255,255,255,0.04);
+  overflow: visible;
+  transition: transform 220ms var(--uxkan-ease-out), border-color 220ms var(--uxkan-ease-out);
+  cursor: default;
+}
+.ai-orbit__icon img {
+  border-radius: 50%;
+}
+/* Inner padding for icons whose source webp has a logo that fills the
+   canvas edge-to-edge (VS Code, Supabase). Badge size stays the same
+   as the others, only the logo is scaled down so it sits centered
+   inside the dark circle with breathing room.
+   Class chaining (.icon.--padded) bumps specificity above the generic
+   `.ai-orbit__icon img { width: 100% }` rule defined later in this file. */
+.ai-orbit__icon.ai-orbit__icon--padded img {
+  width: 62%;
+  height: 62%;
+  border-radius: 0;
+  object-fit: contain;
+}
+.ai-orbit__icon--lg { top: -28px; left: -28px; width: 56px; height: 56px; }
+.ai-orbit__icon--sm { top: -18px; left: -18px; width: 36px; height: 36px; }
+@media (min-width: 980px) {
+  .ai-orbit__icon       { top: -26px; left: -26px; width: 52px; height: 52px; }
+  .ai-orbit__icon--lg   { top: -32px; left: -32px; width: 64px; height: 64px; }
+  .ai-orbit__icon--sm   { top: -22px; left: -22px; width: 44px; height: 44px; }
+}
+.ai-orbit__icon:hover {
+  border-color: rgba(255,255,255,0.30);
+  transform: scale(1.10);
+}
+
+/* Hover tooltip — uses data-tool attribute for the label.
+   Pure CSS, fades + slides up under the icon. */
+.ai-orbit__icon::after {
+  content: attr(data-tool);
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-4px);
+  background: rgba(20,20,24,0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--uxkan-fg-1);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 5px 10px;
+  border-radius: var(--uxkan-radius-pill);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity 180ms var(--uxkan-ease-out),
+    transform 180ms var(--uxkan-ease-out);
+  z-index: 3;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+}
+.ai-orbit__icon:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+.ai-orbit__icon svg {
+  width: 64%; height: 64%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+/* webp icons fill the full circle. Container's overflow:hidden + 50%
+   border-radius clips any square corners away, so square source files
+   render as perfect circles regardless of their canvas. */
+.ai-orbit__icon img {
+  width: 100%; height: 100%;
+  display: block;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+/* ---------- 2. UX/UI mockup ---------- */
+.bento-card--ux {
+  background:
+    radial-gradient(120% 100% at 100% 0%, rgba(74,224,235,0.14), transparent 55%),
+    radial-gradient(80% 80% at 0% 100%, rgba(174,74,170,0.10), transparent 60%),
+    linear-gradient(180deg, rgb(13,14,18) 0%, rgb(8,9,12) 100%);
+}
+.bento-card--ux .bento-card__visual {
+  min-height: 280px;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-top: 0;
+  margin-bottom: 16px;
+}
+.ux-mock {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  flex: 1 1 auto;
+  justify-content: flex-start;
+}
+.bento-card--ux .ux-mock__canvas {
+  flex: 1 1 auto;
+}
+.ux-mock__canvas {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.015) 100%);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--uxkan-radius-md);
+  padding: 12px 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+}
+.ux-mock__line {
+  height: 9px;
+}
+.ux-mock__topbar {
+  display: flex; align-items: center; gap: 5px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.ux-mock__topbar span:not(.ux-mock__url) {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+}
+.ux-mock__topbar span:nth-child(1) { background: rgba(255,95,86,0.5); }
+.ux-mock__topbar span:nth-child(2) { background: rgba(255,189,46,0.5); }
+.ux-mock__topbar span:nth-child(3) { background: rgba(39,201,63,0.5); }
+.ux-mock__url {
+  flex: 1;
+  height: 12px;
+  margin-left: 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.04);
+}
+.ux-mock__hero {
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ux-mock__line {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.08);
+}
+.ux-mock__line--lg { width: 78%; height: 10px; background: rgba(255,255,255,0.14); }
+.ux-mock__line--md { width: 46%; }
+.ux-mock__states {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  margin-top: 2px;
+}
+.ux-mock__btn {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: var(--uxkan-fg-3);
+  transition: all var(--uxkan-dur-base) var(--uxkan-ease-out);
+}
+.ux-mock__btn--hover {
+  background: rgba(74,224,235,0.10);
+  border-color: rgba(74,224,235,0.32);
+  color: rgb(180,240,250);
+  box-shadow: 0 0 0 3px rgba(74,224,235,0.06);
+}
+.ux-mock__btn--active {
+  background: linear-gradient(135deg, rgba(205,91,87,0.30), rgba(174,74,170,0.30));
+  border-color: rgba(255,143,234,0.40);
+  color: var(--uxkan-fg-1);
+  box-shadow: 0 0 0 3px rgba(255,143,234,0.10);
+}
+/* Component placeholder cards inside the wireframe — fills empty space
+   so the canvas reads as a real layout, not a half-finished mockup. */
+.ux-mock__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 2px;
+}
+.ux-mock__card {
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: var(--uxkan-radius-sm);
+  padding: 8px;
+  display: flex; flex-direction: column;
+  gap: 5px;
+}
+.ux-mock__card-thumb {
+  display: block;
+  height: 28px;
+  border-radius: var(--uxkan-radius-xs);
+  background: linear-gradient(135deg, rgba(74,224,235,0.18), rgba(174,74,170,0.12));
+}
+.ux-mock__card-thumb--alt {
+  background: linear-gradient(135deg, rgba(255,143,234,0.20), rgba(205,91,87,0.10));
+}
+.ux-mock__card-line {
+  display: block;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.10);
+}
+.ux-mock__card-line--xs { width: 50%; background: rgba(255,255,255,0.05); }
+
+/* A/B test section under the component cards — shows two variants
+   with a tiny progress bar each (e.g. 42% vs 58%), reinforcing the
+   "we test what works" message of the UX/UI card. */
+.ux-mock__ab {
+  display: flex; flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+.ux-mock__ab-label {
+  font-size: 9px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--uxkan-fg-4);
+  font-weight: 500;
+}
+.ux-mock__ab-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.ux-mock__ab-variant {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.035);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--uxkan-radius-sm);
+  padding: 6px 9px;
+}
+.ux-mock__ab-tag {
+  font-size: 9px;
+  font-weight: 700;
+  width: 16px; height: 16px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.06);
+}
+.ux-mock__ab-variant--a .ux-mock__ab-tag {
+  background: rgba(74,224,235,0.15);
+  color: rgb(180,240,250);
+}
+.ux-mock__ab-variant--b .ux-mock__ab-tag {
+  background: rgba(255,143,234,0.18);
+  color: rgb(255,200,235);
+}
+.ux-mock__ab-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255,255,255,0.06);
+  position: relative;
+  overflow: hidden;
+}
+.ux-mock__ab-bar::after {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: var(--w, 50%);
+  background: linear-gradient(90deg, rgba(74,224,235,0.55), rgba(255,143,234,0.55));
+  border-radius: 2px;
+}
+
+/* Cursor swings between Variant A and Variant B in the A/B section,
+   illustrating live testing. Pure transform animation (translate-only)
+   keeps it compositor-friendly and flicker-free. */
+.ux-mock__cursor {
+  position: absolute;
+  display: block;
+  width: 14px; height: 14px;
+  left: 50%;
+  top: 80%;
+  pointer-events: none;
+  animation: ux-cursor-ab 5.4s var(--uxkan-ease-soft) infinite;
+  will-change: transform;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.55));
+  z-index: 2;
+}
+.ux-mock__cursor svg { width: 100%; height: 100%; display: block; }
+@keyframes ux-cursor-ab {
+  0%,  20% { transform: translateX(calc(-50% - 70px)); }
+  50%, 70% { transform: translateX(calc(-50% + 70px)); }
+  100%     { transform: translateX(calc(-50% - 70px)); }
+}
+
+.ux-mock__flow {
+  display: flex; align-items: center; gap: 8px;
+  justify-content: center;
+  padding-top: 2px;
+}
+.ux-mock__flow-step {
+  font-size: 10.5px;
+  letter-spacing: 0;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--uxkan-fg-3);
+  white-space: nowrap;
+}
+.ux-mock__flow-line {
+  flex: 0 0 18px;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.04), rgba(255,143,234,0.30), rgba(255,255,255,0.04));
+  position: relative;
+}
+.ux-mock__flow-line::after {
+  content: "";
+  position: absolute;
+  right: -1px; top: 50%;
+  width: 4px; height: 4px;
+  border-top: 1px solid rgba(255,143,234,0.55);
+  border-right: 1px solid rgba(255,143,234,0.55);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+/* ---------- SEO/SEA — Google-style search mockup ---------- */
+.bento-card--seo {
+  background:
+    radial-gradient(120% 100% at 100% 0%, rgba(255,143,234,0.14), transparent 55%),
+    radial-gradient(80% 80% at 0% 100%, rgba(74,224,235,0.08), transparent 60%),
+    linear-gradient(180deg, rgb(14,12,18) 0%, rgb(8,8,12) 100%);
+}
+.bento-card--seo .bento-card__visual {
+  flex-direction: column;
+  gap: 10px;
+  align-items: stretch;
+  justify-content: flex-start;
+}
+.seo-mock {
+  display: flex; flex-direction: column;
+  gap: 9px;
+  width: 100%;
+}
+.seo-mock__searchbar {
+  display: flex; align-items: center;
+  gap: 9px;
+  padding: 9px 14px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  border-radius: var(--uxkan-radius-pill);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+}
+.seo-mock__icon {
+  width: 13px; height: 13px;
+  color: var(--uxkan-fg-3);
+  flex-shrink: 0;
+}
+.seo-mock__query {
+  font-size: 12px;
+  color: var(--uxkan-fg-2);
+  letter-spacing: -0.005em;
+  font-family: "SF Mono", "JetBrains Mono", Menlo, monospace;
+}
+.seo-mock__caret {
+  display: inline-block;
+  width: 1px; height: 12px;
+  background: var(--uxkan-fg-2);
+  margin-left: -6px;
+  animation: seo-caret 1.05s steps(1) infinite;
+  will-change: opacity;
+}
+@keyframes seo-caret { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+.seo-mock__result {
+  display: flex; flex-direction: column; gap: 3px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: var(--uxkan-radius-md);
+  padding: 10px 12px 12px;
+}
+.seo-mock__url {
+  font-size: 10.5px;
+  color: var(--uxkan-fg-3);
+  letter-spacing: 0;
+}
+.seo-mock__url span { color: var(--uxkan-fg-4); padding: 0 4px; }
+.seo-mock__title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgb(180,210,255);
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+}
+.seo-mock__desc {
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.08);
+  margin-top: 4px;
+}
+.seo-mock__desc--short { width: 56%; background: rgba(255,255,255,0.05); margin-top: 2px; }
+
+.seo-mock__chips {
+  display: flex; gap: 6px;
+  padding-top: 2px;
+}
+.seo-mock__chip {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 3px 9px;
+  border-radius: var(--uxkan-radius-pill);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--uxkan-fg-3);
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.seo-mock__chip--rank {
+  background: linear-gradient(135deg, rgba(255,143,234,0.22), rgba(174,74,170,0.10));
+  border-color: rgba(255,143,234,0.32);
+  color: rgb(255,210,235);
+  font-weight: 700;
+}
+
+/* ---------- Strategy graph ---------- */
+.bento-card--strategy {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(74,224,235,0.12), transparent 55%),
+    radial-gradient(80% 80% at 100% 100%, rgba(255,143,234,0.10), transparent 60%),
+    linear-gradient(180deg, rgb(12,14,18) 0%, rgb(8,9,12) 100%);
+}
+.bento-card--strategy .bento-card__visual {
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+.strat-graph {
+  position: relative;
+  width: 100%;
+  height: 110px;
+}
+.strat-graph svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.strat-graph__line {
+  stroke-dasharray: 460;
+  stroke-dashoffset: 460;
+  animation: strat-draw 1.6s var(--uxkan-ease-out) forwards 0.3s;
+  /* drop-shadow filter on a stretched SVG line is repaint-heavy on some
+     browsers; skip filter to keep the section flicker-free. */
+}
+.strat-graph__area {
+  opacity: 0;
+  animation: strat-fade 1s var(--uxkan-ease-out) forwards 1.2s;
+}
+/* Perfect circle dot positioned on top of the SVG via percentage,
+   immune to SVG's preserveAspectRatio="none" stretching. */
+.strat-graph__dot {
+  position: absolute;
+  /* x = 220/320 = 68.75%, y = 40/120 = 33.33% */
+  left: 68.75%;
+  top: 33.33%;
+  width: 12px;
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255,255,255,0.6);
+  opacity: 0;
+  animation:
+    strat-fade 0.4s var(--uxkan-ease-out) forwards 1.6s,
+    strat-pulse 2.4s var(--uxkan-ease-soft) infinite 2s;
+  will-change: transform;
+}
+/* Halo as a static gradient sibling that pulses opacity only */
+.strat-graph__dot::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255,143,234,0.6), transparent 70%);
+  opacity: 0;
+  animation: strat-halo 2.4s var(--uxkan-ease-soft) infinite 2s;
+  pointer-events: none;
+}
+@keyframes strat-draw { to { stroke-dashoffset: 0; } }
+@keyframes strat-fade { to { opacity: 1; } }
+@keyframes strat-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.30); }
+}
+@keyframes strat-halo {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.95; }
+}
+.strat-stats {
+  display: flex; gap: 8px;
+  padding: 0 4px;
+}
+.strat-stats__chip {
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: var(--uxkan-radius-pill);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.10);
+  color: var(--uxkan-fg-2);
+  letter-spacing: -0.005em;
+  font-weight: 500;
+}
+.strat-stats__chip:first-child {
+  background: linear-gradient(135deg, rgba(74,224,235,0.18), rgba(74,224,235,0.04));
+  border-color: rgba(74,224,235,0.28);
+  color: rgb(180,240,250);
+}
+
+/* ---------- Speed flow ---------- */
+.bento-card--speed {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(8,168,138,0.12), transparent 55%),
+    radial-gradient(80% 80% at 100% 100%, rgba(255,143,234,0.10), transparent 60%),
+    linear-gradient(180deg, rgb(12,14,16) 0%, rgb(8,10,11) 100%);
+}
+.bento-card--speed .bento-card__visual {
+  flex-direction: column;
+  gap: 14px;
+  align-items: stretch;
+  justify-content: center;
+}
+.speed-flow {
+  display: flex; flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  justify-content: center;
+}
+.speed-flow__step {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: var(--uxkan-radius-pill);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  color: var(--uxkan-fg-3);
+  white-space: nowrap;
+  transition: all var(--uxkan-dur-base) var(--uxkan-ease-out);
+}
+.speed-flow__step.is-done {
+  background: rgba(8,168,138,0.10);
+  border-color: rgba(8,168,138,0.30);
+  color: rgb(140,235,200);
+}
+.speed-flow__step.is-active {
+  background: linear-gradient(135deg, rgba(255,143,234,0.20), rgba(174,74,170,0.20));
+  border-color: rgba(255,143,234,0.40);
+  color: var(--uxkan-fg-1);
+  box-shadow: 0 0 0 4px rgba(255,143,234,0.08);
+  animation: speed-blink 1.6s var(--uxkan-ease-soft) infinite;
+}
+@keyframes speed-blink {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(255,143,234,0.08); }
+  50%      { box-shadow: 0 0 0 8px rgba(255,143,234,0.04); }
+}
+.speed-flow__arrow {
+  width: 18px; height: 1px;
+  background: linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.20), rgba(255,255,255,0.06));
+  position: relative;
+}
+.speed-flow__arrow::after {
+  content: "";
+  position: absolute;
+  right: -2px; top: 50%;
+  width: 6px; height: 6px;
+  border-top: 1px solid rgba(255,255,255,0.30);
+  border-right: 1px solid rgba(255,255,255,0.30);
+  transform: translateY(-50%) rotate(45deg);
+}
+.speed-pulse {
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,143,234,0.4) 50%, rgba(255,255,255,0) 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  background-position: -50% 0;
+  animation: speed-sweep 2.4s var(--uxkan-ease-soft) infinite;
+}
+@keyframes speed-sweep {
+  0%   { background-position: -50% 0; }
+  100% { background-position: 150% 0; }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .ai-orbit__pos,
+  .ai-orbit__center-glow,
+  .ux-mock__cursor,
+  .strat-graph__line,
+  .strat-graph__area,
+  .strat-graph__dot,
+  .strat-graph__dot::after,
+  .seo-mock__caret,
+  .speed-flow__step.is-active,
+  .speed-pulse {
+    animation: none !important;
+  }
+  .strat-graph__line { stroke-dashoffset: 0; }
+  .strat-graph__area, .strat-graph__dot { opacity: 1; }
 }
 
 /* ============================================================
